@@ -1,0 +1,133 @@
+{
+  "name": "VyapaarAI V1.0",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9d434adb-1d2a-4b7e-b32f-d011c13c6975",
+      "name": "When chat message received"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are VyapaarAI, an intelligent business assistant for small and medium businesses.\n\nYour responsibilities:\n1. Analyze sales and revenue.\n2. Calculate profit and loss.\n3. Track inventory and stock levels.\n4. Suggest when to reorder products.\n5. Identify slow-moving and fast-moving products.\n6. Provide business growth suggestions.\n7. Help with expense management.\n8. Recommend practical business strategies.\n\nRules:\n- Support both Tamil and English.\n- Use simple language.\n- Give accurate calculations.\n- Show calculations step by step when needed.\n- Never invent business data.\n- Ask for missing information before making assumptions.\n- Provide practical, affordable suggestions.\n- Use tables wherever useful.\n\nYour goal is to help business owners make smarter decisions.\nAlways use the Google Sheets tool to retrieve actual inventory data before answering stock-related questions. Never guess stock quantities or prices. Answer using only the retrieved spreadsheet data.\nFor every inventory question, use the Google Sheets tool to fetch actual product records.\n\nSearch using Product_Name.\nReport Stock_Quantity, Unit_Price, Reorder_Level and Status.\nNever invent inventory data.\nIf no matching product is found, say product not found.\nAnswer in the user's language (Tamil or English)."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "2759b590-6dcb-4614-96cc-6ce5b2db6ebf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        208
+      ],
+      "id": "eb405763-872e-487e-8f76-9bbb85519228",
+      "name": "Google Gemini Chat Model2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        208
+      ],
+      "id": "2bad6e92-266a-422a-b34b-8c17bb382fe2",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_YOUR_GOOGLE_SHEET_URL",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        208
+      ],
+      "id": "c808ad83-5295-4c22-b801-1271aa6fa673",
+      "name": "Get row(s) in sheet in Google Sheets"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": []
+}
